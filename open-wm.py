@@ -33,24 +33,22 @@ def main():
     location = sys.argv[1]
     api_key = get_api_key()
 
-    result = get_weather(api_key, location)
+    result = get_forecast(api_key, location)
 
     code = result["cod"]
-    if code != 200:
+    if code != "200":
         exit(f"Code {code}: {result['message']}")
 
-    # pp = pprint.PrettyPrinter(indent=4)
-    # pp.pprint(result)
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(result)
+
+    result = get_weather(api_key, location)
 
     print(f"Current conditions in {location}, ", end="")
     print(f"{result['sys']['country']}: ", end="")
     print(f"{result['weather'][0]['description'].capitalize()}, ", end="")
-    print(f"{result['main']['temp']}C.")
+    print(f"{int(result['main']['temp'])} C.")
 
-    result = get_forecast(api_key, location)
-
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(result)
 
 if __name__ == "__main__":
     main()
