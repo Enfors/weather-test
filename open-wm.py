@@ -26,12 +26,20 @@ def get_forecast(api_key, location):
     return r.json()
 
 
+def format_direction(degrees):
+    cardinals = ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "N"]
+    return cardinals[int((degrees + 22.5) / 45)]
+
+
 def format_forecast_item(data):
     disp = ""
 
     disp += f"{data['dt_txt']}: "
     disp += f"{data['weather'][0]['description'].capitalize()}, "
-    disp += f"{int(data['main']['temp'])} C."
+    disp += f"{int(data['main']['temp'])} C, wind "
+    wind = data["wind"]
+    disp += f"{format_direction(wind['deg'])} at "
+    disp += f"{int(wind['speed'] + 0.5)} m/s."
 
     return disp
 
@@ -49,18 +57,19 @@ def main():
     if code != "200":
         exit(f"Code {code}: {forecast['message']}")
 
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(forecast)
-
-    for item in forecast["list"]:
-        print(format_forecast_item(item))
+    # pp = pprint.PrettyPrinter(indent=4)
+    # pp.pprint(forecast)
 
     current = get_weather(api_key, location)
 
-    print(f"Current conditions in {location}, ", end="")
-    print(f"{current['sys']['country']}: ", end="")
+    print(f"=== Current conditions in {location}, {current['sys']['country']} ===")
     print(f"{current['weather'][0]['description'].capitalize()}, ", end="")
-    print(f"{int(current['main']['temp'])} C.")
+    print(f"{int(current['main']['temp'])} C.\n")
+
+    print(f"=== Forecast ===")
+    for item in forecast["list"]:
+        print(format_forecast_item(item))
+
 
 if __name__ == "__main__":
     main()
