@@ -26,29 +26,41 @@ def get_forecast(api_key, location):
     return r.json()
 
 
+def format_forecast_item(data):
+    disp = ""
+
+    disp += f"{data['dt_txt']}: "
+    disp += f"{data['weather'][0]['description'].capitalize()}, "
+    disp += f"{int(data['main']['temp'])} C."
+
+    return disp
+
+
 def main():
     if len(sys.argv) != 2:
         exit(f"Usage: {sys.argv[0]} location")
 
-    location = sys.argv[1]
+    location = sys.argv[1].capitalize()
     api_key = get_api_key()
 
-    result = get_forecast(api_key, location)
+    forecast = get_forecast(api_key, location)
 
-    code = result["cod"]
+    code = forecast["cod"]
     if code != "200":
-        exit(f"Code {code}: {result['message']}")
+        exit(f"Code {code}: {forecast['message']}")
 
     pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(result)
+    pp.pprint(forecast)
 
-    result = get_weather(api_key, location)
+    for item in forecast["list"]:
+        print(format_forecast_item(item))
+
+    current = get_weather(api_key, location)
 
     print(f"Current conditions in {location}, ", end="")
-    print(f"{result['sys']['country']}: ", end="")
-    print(f"{result['weather'][0]['description'].capitalize()}, ", end="")
-    print(f"{int(result['main']['temp'])} C.")
-
+    print(f"{current['sys']['country']}: ", end="")
+    print(f"{current['weather'][0]['description'].capitalize()}, ", end="")
+    print(f"{int(current['main']['temp'])} C.")
 
 if __name__ == "__main__":
     main()
