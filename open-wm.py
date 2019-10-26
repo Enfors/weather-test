@@ -5,6 +5,8 @@ import requests
 import sys
 import pprint
 
+import datetime
+
 base_url = "https://api.openweathermap.org/data/2.5/"
 
 
@@ -31,10 +33,11 @@ def format_direction(degrees):
     return cardinals[int((degrees + 22.5) / 45)]
 
 
-def format_forecast_item(data):
+def format_item(data, timestamp):
     disp = ""
 
-    disp += f"{data['dt_txt']}: "
+    disp += datetime.datetime.fromtimestamp(timestamp).\
+        strftime("%Y-%m-%d %H:%M: ")
     disp += f"{data['weather'][0]['description'].capitalize()}, "
     disp += f"{int(data['main']['temp'])} C, wind "
     wind = data["wind"]
@@ -62,13 +65,14 @@ def main():
 
     current = get_weather(api_key, location)
 
-    print(f"=== Current conditions in {location}, {current['sys']['country']} ===")
-    print(f"{current['weather'][0]['description'].capitalize()}, ", end="")
-    print(f"{int(current['main']['temp'])} C.\n")
+    print(f"=== Current conditions in {location}, " +
+          f"{current['sys']['country']} ===")
+
+    print(format_item(current, int(current["dt"])))
 
     print(f"=== Forecast ===")
     for item in forecast["list"]:
-        print(format_forecast_item(item))
+        print(format_item(item, int(item["dt"])))
 
 
 if __name__ == "__main__":
