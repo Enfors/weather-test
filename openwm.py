@@ -12,7 +12,7 @@ base_url = "https://api.openweathermap.org/data/2.5/"
 
 def get_api_key():
     config = configparser.ConfigParser()
-    config.read("config.ini")
+    config.read("/home/enfors/.weather.conf")
     return config["openweathermap"]["api"]
 
 
@@ -47,6 +47,20 @@ def format_item(data, timestamp):
     return disp
 
 
+def format_item_briefly(data):
+    disp = ""
+
+    disp += f"{data['weather'][0]['description'].capitalize()}, "
+    disp += f"{int(data['main']['temp'])} C"
+
+    return disp
+
+def get_current_formatted_briefly(location: str):
+    api_key = get_api_key()
+    data = get_weather(api_key, location)
+    return format_item_briefly(data)
+
+
 def main():
     if len(sys.argv) != 2:
         exit(f"Usage: {sys.argv[0]} location")
@@ -73,6 +87,8 @@ def main():
     print(f"=== Forecast ===")
     for item in forecast["list"]:
         print(format_item(item, int(item["dt"])))
+
+    print(get_current_formatted_briefly("karlstad"))
 
 
 if __name__ == "__main__":
