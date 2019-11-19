@@ -1,3 +1,4 @@
 *.ini
 yahoo
 private
+__pycache__
