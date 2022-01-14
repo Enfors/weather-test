@@ -38,8 +38,8 @@ def format_item(data, timestamp):
 
     disp += datetime.datetime.fromtimestamp(timestamp).\
         strftime("%Y-%m-%d %H:%M: ")
-    disp += f"{data['weather'][0]['description'].capitalize()}, "
-    disp += f"{int(data['main']['temp'])} C, wind "
+    disp += f"{data['weather'][0]['description'].capitalize():16s} "
+    disp += f"{int(data['main']['temp']):3d} C   wind "
     wind = data["wind"]
     disp += f"{format_direction(wind['deg'])} at "
     disp += f"{int(wind['speed'] + 0.5)} m/s."
