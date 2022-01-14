@@ -3,7 +3,6 @@
 import configparser
 import requests
 import sys
-import pprint
 
 import datetime
 
@@ -54,6 +53,7 @@ def format_item_briefly(data):
     disp += f"{int(data['main']['temp'])} C"
 
     return disp
+
 
 def get_current_formatted_briefly(location: str):
     api_key = get_api_key()
